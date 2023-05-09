@@ -7,16 +7,21 @@ import com.globant.ibacademy.billing.model.Bill;
 import com.globant.ibacademy.billing.model.Item;
 import com.globant.ibacademy.billing.model.Product;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.*;
 
+
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
+@Repository
 @Slf4j
 public class BillSqlDao  implements BillDao, SQLDao<Bill> {
     final Connection connection;
 
+    @Autowired
     public BillSqlDao(Connection conn) {
         connection = conn;
     }

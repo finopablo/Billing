@@ -2,7 +2,6 @@ package com.globant.ibacademy.billing;
 
 import com.globant.ibacademy.billing.model.Product;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 public class TestParams {

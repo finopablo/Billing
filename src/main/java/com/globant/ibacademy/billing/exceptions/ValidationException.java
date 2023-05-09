@@ -1,6 +1,6 @@
 package com.globant.ibacademy.billing.exceptions;
 
-public class ValidationException extends Exception {
+public class ValidationException extends RuntimeException {
     public ValidationException(String message, Exception cause) {
         super(message, cause);
     }

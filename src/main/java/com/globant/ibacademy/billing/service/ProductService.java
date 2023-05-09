@@ -5,14 +5,18 @@ import com.globant.ibacademy.billing.exceptions.DataAccessException;
 import com.globant.ibacademy.billing.exceptions.EntityNotFoundException;
 import com.globant.ibacademy.billing.model.Product;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
 @Slf4j
+@Service
 public class ProductService {
     private final ProductDao productDao;
 
+    @Autowired
     public ProductService(ProductDao productDao) {
         this.productDao = productDao;
     }

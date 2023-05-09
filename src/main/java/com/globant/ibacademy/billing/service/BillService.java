@@ -5,10 +5,14 @@ import com.globant.ibacademy.billing.exceptions.DataAccessException;
 import com.globant.ibacademy.billing.exceptions.EntityNotFoundException;
 import com.globant.ibacademy.billing.exceptions.ValidationException;
 import com.globant.ibacademy.billing.model.Bill;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
+@Service
+@Slf4j
 public class BillService {
 
     private final BillDao billDao;

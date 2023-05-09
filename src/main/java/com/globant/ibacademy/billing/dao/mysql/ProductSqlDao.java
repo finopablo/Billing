@@ -5,6 +5,8 @@ import com.globant.ibacademy.billing.dao.SQLDao;
 import com.globant.ibacademy.billing.exceptions.DataAccessException;
 import com.globant.ibacademy.billing.model.Product;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.LinkedList;
@@ -15,10 +17,13 @@ import java.util.Optional;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 @Slf4j
+@Repository
 public final class ProductSqlDao implements ProductDao, SQLDao<Product> {
 
     final Connection connection;
 
+
+    @Autowired
     public ProductSqlDao(Connection conn) {
         this.connection = conn;
     }
