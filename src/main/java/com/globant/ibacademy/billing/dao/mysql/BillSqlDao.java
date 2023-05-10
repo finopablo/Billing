@@ -28,12 +28,12 @@ public class BillSqlDao  implements BillDao, SQLDao<Bill> {
 
     @Override
     public Optional<Bill> findByNumber(Integer number) throws DataAccessException {
-        try {
-            PreparedStatement ps = connection.prepareStatement("select * from bills where number = ?");
+        try (
+            PreparedStatement ps = connection.prepareStatement("select * from bills where number = ?")
+            ) {
             ps.setInt(1, number);
             ResultSet rs = ps.executeQuery();
-            Bill b =  get(rs);
-            ps.close();
+            Bill b = rs.next() ? get(rs) : null;
             return Optional.ofNullable(b);
         } catch (SQLException e) {
             throw new DataAccessException(String.format("Error getting BillNumber=%d", number), e);
@@ -42,16 +42,16 @@ public class BillSqlDao  implements BillDao, SQLDao<Bill> {
 
     @Override
     public List<Bill> findByClient(String client) throws DataAccessException {
-        try  {
-            List<Bill> list = new LinkedList<>();
-            PreparedStatement ps = connection.prepareStatement("select * from bills where client = ?");
+        List<Bill> list = new LinkedList<>();
+        try  (
+                PreparedStatement ps = connection.prepareStatement("select * from bills where client = ?");
+        ) {
             ps.setString(1, client);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(get(rs));
             }
-            ps.close();
-            return list;
+              return list;
         } catch (SQLException e) {
             throw new DataAccessException(String.format("Error getting client = %s bills", client), e);
         }
@@ -112,7 +112,7 @@ public class BillSqlDao  implements BillDao, SQLDao<Bill> {
       ) {
           ps.setInt(1, id);
           ResultSet rs = ps.executeQuery();
-          Bill b = get(rs);
+          Bill b = rs.next()?get(rs):null;
           return Optional.ofNullable(b);
       } catch (SQLException e) {
           throw new DataAccessException(String.format("Error getting BillId=%s", id), e);

@@ -4,4 +4,8 @@ public class EntityAlreadyExistsException extends RuntimeException {
     public EntityAlreadyExistsException(String message, Exception cause) {
         super(message, cause);
     }
+
+    public EntityAlreadyExistsException(String message) {
+        super(message);
+    }
 }

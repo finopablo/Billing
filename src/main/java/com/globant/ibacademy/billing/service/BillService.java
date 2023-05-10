@@ -2,6 +2,7 @@ package com.globant.ibacademy.billing.service;
 
 import com.globant.ibacademy.billing.dao.BillDao;
 import com.globant.ibacademy.billing.exceptions.DataAccessException;
+import com.globant.ibacademy.billing.exceptions.EntityAlreadyExistsException;
 import com.globant.ibacademy.billing.exceptions.EntityNotFoundException;
 import com.globant.ibacademy.billing.exceptions.ValidationException;
 import com.globant.ibacademy.billing.model.Bill;
@@ -25,6 +26,7 @@ public class BillService {
 
     public Bill saveBill(Bill bill) throws ValidationException {
         if (Objects.isNull(bill)) throw new IllegalArgumentException("Bill can't be null");
+        if (billExists(bill.number())) throw new EntityAlreadyExistsException(String.format("Bill number %s already exists", bill.number()), null);
         if (validate(bill)) {
             return billDao.save(bill);
         } else {
@@ -52,4 +54,11 @@ public class BillService {
         return billDao.findAll().stream().filter(o -> customer.equals(o.customer())).toList();
     }
 
+    public Bill findById(Integer id) {
+        return  billDao.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Bill Id %s not found", id)));
+    }
+
+    private boolean billExists(Integer number) {
+        return  billDao.findByNumber(number).isPresent();
+    }
 }
