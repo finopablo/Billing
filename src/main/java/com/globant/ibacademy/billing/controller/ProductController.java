@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/products")
+@RequestMapping(value = "/api/v1/products" , produces = "application/json", consumes = "application/json")
 @Validated
-
-public class ProductController extends Controller<Product> {
+public class ProductController  extends Controller<Product> {
 
     final ProductService productService;
-
 
     @Autowired
     public ProductController(ProductService productService) {
