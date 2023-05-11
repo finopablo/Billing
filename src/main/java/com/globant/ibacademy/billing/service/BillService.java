@@ -1,7 +1,6 @@
 package com.globant.ibacademy.billing.service;
 
 import com.globant.ibacademy.billing.dao.BillDao;
-import com.globant.ibacademy.billing.exceptions.DataAccessException;
 import com.globant.ibacademy.billing.exceptions.EntityAlreadyExistsException;
 import com.globant.ibacademy.billing.exceptions.EntityNotFoundException;
 import com.globant.ibacademy.billing.exceptions.ValidationException;
@@ -26,7 +25,7 @@ public class BillService {
 
     public Bill saveBill(Bill bill) throws ValidationException {
         if (Objects.isNull(bill)) throw new IllegalArgumentException("Bill can't be null");
-        if (billExists(bill.number())) throw new EntityAlreadyExistsException(String.format("Bill number %s already exists", bill.number()), null);
+        if (billExists(bill.getNumber())) throw new EntityAlreadyExistsException(String.format("Bill number %s already exists", bill.getNumber()));
         if (validate(bill)) {
             return billDao.save(bill);
         } else {
@@ -36,29 +35,29 @@ public class BillService {
     }
 
     private boolean validate(Bill bill) {
-        return bill.items().stream().allMatch(i -> {
+        return bill.getItems().stream().allMatch(i -> {
             try {
-                return productService.findProductById(i.product().id()) != null;
+                return productService.findProductById(i.getProduct().getId()) != null;
             } catch (EntityNotFoundException e) {
                 return false;
             }
         });
     }
 
-    public List<Bill> findAll() throws DataAccessException {
-        return billDao.findAll();
+    public List<Bill> findAll()  {
+        return  billDao.findAll();
     }
 
     public List<Bill> findByCustomer(String customer) {
         if (Objects.isNull(customer)) throw new IllegalArgumentException("Customer can't be null");
-        return billDao.findAll().stream().filter(o -> customer.equals(o.customer())).toList();
+        return billDao.findAll().stream().filter(o -> customer.equals(o.getCustomer())).toList();
     }
 
     public Bill findById(Integer id) {
         return  billDao.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Bill Id %s not found", id)));
     }
 
-    private boolean billExists(Integer number) {
+    public boolean billExists(Integer number) {
         return  billDao.findByNumber(number).isPresent();
     }
 }

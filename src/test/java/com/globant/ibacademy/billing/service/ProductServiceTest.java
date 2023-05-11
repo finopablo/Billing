@@ -13,7 +13,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -33,15 +35,15 @@ class ProductServiceTest {
 
 
     @ParameterizedTest
-    @MethodSource("com.globant.ibacademy.billing.TestParams#products")
+    @MethodSource("com.globant.ibacademy.billing.TestParams#validProducts()")
      void givenValidProduct_whenSaveProduct_thenSucceed(Product product) {
         ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
-        when(productDao.save(captor.capture())).thenReturn(new Product(new Random().nextInt(), product.name(), product.description(), product.price()));
+        when(productDao.save(captor.capture())).thenReturn(new Product(new Random().nextInt(), product.getName(), product.getDescription(), product.getPrice()));
         Product returnedProduct = productService.saveProduct(product);
         assertNotNull(returnedProduct);
-        assertNotNull( returnedProduct.id() );
-        assertEquals(product.name(), returnedProduct.name());
-        assertEquals(product.description(), returnedProduct.description());
+        assertNotNull( returnedProduct.getId() );
+        assertEquals(product.getName(), returnedProduct.getName());
+        assertEquals(product.getDescription(), returnedProduct.getDescription());
         verify(productDao, only()).save(captor.getValue());
     }
 
@@ -72,9 +74,9 @@ class ProductServiceTest {
     @MethodSource("com.globant.ibacademy.billing.TestParams#productIds")
     void givenValidID_whenDeleteProduct_thenSuccess(Integer productId) {
         ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
-        lenient().doNothing().when(productDao).delete(captor.capture());
+        lenient().doNothing().when(productDao).deleteById(captor.capture());
         productService.deleteProduct(productId);
-        verify(productDao, only()).delete(captor.getValue());
+        verify(productDao, only()).deleteById(captor.getValue());
     }
 
     @Test
@@ -90,7 +92,7 @@ class ProductServiceTest {
     @Test
     void givenValidName_whenFindProductByName_thenSuccess() throws EntityNotFoundException {
         when(productDao.findAll()).thenReturn(productList);
-        Product returnProduct = productService.findByName(productList.get(0).name());
+        Product returnProduct = productService.findByName(productList.get(0).getName());
         assertNotNull(returnProduct);
         assertEquals(productList.get(0), returnProduct);
         verify(productDao, only()).findAll();
@@ -113,7 +115,7 @@ class ProductServiceTest {
     @Test
     void givenAListOfProducts_whenSaveBulk_thenReturnOnlySavedProducts() {
         when(productDao.save(productList.get(0))).thenAnswer(returnsFirstArg());
-        when(productDao.save(productList.get(1))).thenThrow(DataAccessException.class);
+        when(productDao.save(productList.get(1))).thenThrow(DataIntegrityViolationException.class);
         when(productDao.save(productList.get(2))).thenAnswer(returnsFirstArg());
         List<Product> savedProducts = productService.bulkSaveProducts(productList);
         assertEquals(productList.size() - 1 , savedProducts.size() );

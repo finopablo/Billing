@@ -2,10 +2,12 @@ package com.globant.ibacademy.billing.service;
 
 import com.globant.ibacademy.billing.dao.ProductDao;
 import com.globant.ibacademy.billing.exceptions.DataAccessException;
+import com.globant.ibacademy.billing.exceptions.EntityAlreadyExistsException;
 import com.globant.ibacademy.billing.exceptions.EntityNotFoundException;
 import com.globant.ibacademy.billing.model.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,12 +27,13 @@ public class ProductService {
         return
                 productList
                         .stream()
-                        .map(p ->{
-                                try {
-                                   return productDao.save(p);
-                                } catch(DataAccessException e) {
-                                     return null;
-                                }
+                        .map(p -> {
+                            try {
+                                return productDao.save(p);
+                            } catch (DataIntegrityViolationException e) {
+                                log.info("Bulk Save Product {} cannot be saved ", p.getName(), e );
+                                return null;
+                            }
                         })
                         .filter(Objects::nonNull)
                         .toList();
@@ -41,15 +44,21 @@ public class ProductService {
         if (Objects.isNull(product)) {
             throw new IllegalArgumentException("Product can't be null");
         }
-        return productDao.save(product);
+        try
+        {
+            return productDao.save(product);
+        } catch(DataIntegrityViolationException e) {
+            log.error("Error saving product", e.getCause());
+            throw new EntityAlreadyExistsException("Product already exists", e);
+        }
     }
 
     public Product findProductById(Integer id) throws EntityNotFoundException {
         return productDao.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Product ID %s does not exists", id)));
     }
 
-    public void deleteProduct(Integer id) {
-        this.productDao.delete(id);
+   public void deleteProduct(Integer id) {
+        this.productDao.deleteById(id);
     }
 
     public List<Product> findAll() {
@@ -60,7 +69,7 @@ public class ProductService {
         return productDao.
                 findAll().
                 stream().
-                filter(o -> name.equals(o.name())).
+                filter(o -> name.equals(o.getName())).
                 findFirst().
                 orElseThrow(() -> new EntityNotFoundException(String.format("Product name %s does not exists", name)));
     }

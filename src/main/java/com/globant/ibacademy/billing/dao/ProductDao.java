@@ -1,7 +1,11 @@
 package com.globant.ibacademy.billing.dao;
 
 import com.globant.ibacademy.billing.model.Product;
+import org.springframework.data.repository.CrudRepository;
 
-public  interface ProductDao extends Dao<Product> {
+import java.util.List;
 
+public  interface ProductDao extends CrudRepository<Product, Integer> {
+
+        public List<Product> findAll();
 }
