@@ -1,4 +1,4 @@
-# Billing
+# Billing Application
 
 Example application to show how we start working with JDBC and transform it into Spring Web and Spring Data.
 
