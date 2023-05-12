@@ -6,5 +6,14 @@ This application consists in a Simple Billing application, where we have Product
 
 Data Model : 
 
-![image](https://github.com/finopablo/Billing/assets/21298531/dd89deac-75a6-4969-b2ac-c52ea622d623)
+![image](https://github.com/finopablo/Billing/assets/21298531/a8e2ba8a-650b-4b43-a210-5acf41f0460b)
+
+
+In this repository you can find two differents branch :
+
+
+1) Spring :  REST service using Spring Boot, but maintaining JDBC data access
+2) Spring-Data : REST Service for Billing application with Spring Data.
+
+
 
