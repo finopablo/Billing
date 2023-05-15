@@ -48,7 +48,6 @@ class ProductControllerTest {
                 andExpect(status().isCreated()).
                 andExpect(header().exists("location")).andReturn();
 
-
         assertThat( result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(savedProduct));
 
     }

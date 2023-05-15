@@ -2,7 +2,6 @@ package com.globant.ibacademy.billing.service;
 
 import com.globant.ibacademy.billing.TestParams;
 import com.globant.ibacademy.billing.dao.ProductDao;
-import com.globant.ibacademy.billing.exceptions.DataAccessException;
 import com.globant.ibacademy.billing.exceptions.EntityNotFoundException;
 import com.globant.ibacademy.billing.model.Product;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
